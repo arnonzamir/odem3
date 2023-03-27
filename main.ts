@@ -1,6 +1,6 @@
 let x = 0
-let m2 = 0
-let m1 = 0
+let right = 0
+let left = 0
 let y = 0
 let mapY = 0
 basic.showLeds(`
@@ -27,16 +27,17 @@ basic.forever(function () {
     }
     mapY = Math.map(y, 0, 512, 0, 255)
     mapY = forward ? mapY : -1 * mapY;
-m1 = mapY
-    m2 = mapY
+left = mapY
+    right = mapY
     x = pins.analogReadPin(AnalogPin.P2)
     if (x > 512) {
-        m1 += 0 - Math.map(x, 512, 1023, 0, 255)
+        left += 0 - Math.map(x, 512, 1023, 0, 255)
     }
     if (x < 512) {
-        m2 += 0 - Math.map(x, 0, 512, 0, 255)
+        right += 0 - Math.map(x, 0, 512, 0, 255)
     }
-    serial.writeValue("m1", m1)
-    radio.sendValue("m1", m1)
-    radio.sendValue("m2", m2)
+    serial.writeValue("left", left)
+    radio.sendValue("left", left)
+    radio.sendValue("right", right)
+    radio.sendValue("steering", x)
 })
