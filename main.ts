@@ -1,8 +1,5 @@
-let x = 0
-let right = 0
-let left = 0
+let m1m3 = 0
 let y = 0
-let mapY = 0
 basic.showLeds(`
     # # # # #
     . . # . .
@@ -11,33 +8,24 @@ basic.showLeds(`
     . . # . .
     `)
 radio.setGroup(1)
-let button = 90
-let mapX = 90
-let forward = true
+let x = 0
 basic.forever(function () {
-    mapY = 0
+    let right = 0
     y = pins.analogReadPin(AnalogPin.P1)
-    forward = y > 512
-    if (y < 510) {
-        y = 512 - y
-    } else if (y > 514) {
-        y = y - 512
-    } else {
-        y = 0
-    }
-    mapY = Math.map(y, 0, 512, 0, 255)
-    mapY = forward ? mapY : -1 * mapY;
-left = mapY
-    right = mapY
+
+    m1m3 = Math.map(y, 0, 1023, -255, 255)
+
     x = pins.analogReadPin(AnalogPin.P2)
-    if (x > 512) {
-        left += 0 - Math.map(x, 512, 1023, 0, 255)
-    }
-    if (x < 512) {
-        right += 0 - Math.map(x, 0, 512, 0, 255)
-    }
-    serial.writeValue("left", left)
-    radio.sendValue("left", left)
-    radio.sendValue("right", right)
+    x = Math.map(x, 0, 1023, -255, 255); 
+    let m2 = m1m3+x
+    let m4 = m1m3-x
+    
+    serial.writeValue("y", m1m3)
+    serial.writeValue("m2", m2)
+    serial.writeValue("m4", m4)
+    radio.sendValue("m1m3", m1m3)
+    radio.sendValue("m2", m2)
+    radio.sendValue("m4", m4)
+   
     radio.sendValue("steering", x)
 })
